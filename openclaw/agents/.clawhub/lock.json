@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "skills": {
+    "yunshi": {
+      "version": "1.1.2",
+      "installedAt": 1775303980064
+    },
+    "newstoady": {
+      "version": "2.0.3",
+      "installedAt": 1775309547296
+    },
+    "dailytech": {
+      "version": "1.0.0",
+      "installedAt": 1775309993050
+    },
+    "dailyfinance": {
+      "version": "1.0.1",
+      "installedAt": 1775310000118
+    },
+    "english-daily": {
+      "version": "1.0.0",
+      "installedAt": 1775310004374
+    },
+    "weather-daily": {
+      "version": "1.0.0",
+      "installedAt": 1775310007082
+    },
+    "daily-sleep": {
+      "version": "1.0.0",
+      "installedAt": 1775310009610
+    },
+    "daily-reflect": {
+      "version": "1.0.0",
+      "installedAt": 1775310012093
+    },
+    "daily-movie": {
+      "version": "1.0.0",
+      "installedAt": 1775310014958
+    },
+    "daily-idiom": {
+      "version": "1.0.0",
+      "installedAt": 1775310017604
+    },
+    "daily-astro": {
+      "version": "1.0.0",
+      "installedAt": 1775310020188
+    },
+    "mingshi": {
+      "version": "1.1.0",
+      "installedAt": 1775310023792
+    },
+    "daily-recipe": {
+      "version": "1.0.0",
+      "installedAt": 1775310050667
+    },
+    "daily-quote": {
+      "version": "1.0.0",
+      "installedAt": 1775310053346
+    },
+    "daily-mindful": {
+      "version": "1.0.0",
+      "installedAt": 1775310055677
+    },
+    "daily-fitness": {
+      "version": "1.0.0",
+      "installedAt": 1775310058034
+    },
+    "todayhistory": {
+      "version": "1.0.4",
+      "installedAt": 1775310060262
+    }
+  }
+}
