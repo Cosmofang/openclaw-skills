@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Automatic Skill — Stage 7: Upload (上传)
+ * Automatic Skill — Stage 8: Upload (上传)
  * 输出 Agent 执行 prompt，指导其将新 skill commit 推送到 GitHub 并发布到 clawHub。
  *
  * 用法:
@@ -44,7 +44,7 @@ const dryRunNote = dryRun ? '\n⚠️  DRY-RUN MODE: Print commands but DO NOT e
 
 if (lang === 'en') {
   console.log(`
-=== AUTOMATIC SKILL — Stage 7: Upload ===
+=== AUTOMATIC SKILL — Stage 8: Upload ===
 Skill: ${slug}
 Skill directory: ${skillDir}
 GitHub repo: ${githubRepo}
@@ -117,13 +117,13 @@ Save the publish response (especially the skill ID or version returned).
 }
 
 If any part FAILED: record the error and stop. Do not proceed.
-If SUCCESS or SKIPPED (dry-run): proceed to Stage 8: node scripts/verify-upload.js ${slug}
+If SUCCESS or SKIPPED (dry-run): proceed to Stage 9: node scripts/verify-upload.js ${slug}
 
 Update data/current-pipeline.json: add "upload" key with the report above.
 `);
 } else {
   console.log(`
-=== AUTOMATIC SKILL — 阶段 7：上传 ===
+=== AUTOMATIC SKILL — 阶段 8：上传 ===
 Skill：${slug}
 Skill 目录：${skillDir}
 GitHub 仓库：${githubRepo}
@@ -196,7 +196,7 @@ ${dryRun
 }
 
 如果任何部分 FAILED：记录错误并停止，不继续。
-如果 SUCCESS 或 SKIPPED（dry-run）：进入阶段 8：node scripts/verify-upload.js ${slug}
+如果 SUCCESS 或 SKIPPED（dry-run）：进入阶段 9：node scripts/verify-upload.js ${slug}
 
 更新 data/current-pipeline.json：添加 "upload" 键，值为上述报告。
 `);

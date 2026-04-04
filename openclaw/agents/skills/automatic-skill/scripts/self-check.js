@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Automatic Skill — Stage 6: Self-Check (自检)
+ * Automatic Skill — Stage 7: Self-Check (自检)
  * 输出 Agent 执行 prompt，指导其对新 skill 逐项核对必填字段、文件树、脚本签名。
  *
  * 用法:
@@ -34,7 +34,7 @@ if (!skillDir) {
 
 if (lang === 'en') {
   console.log(`
-=== AUTOMATIC SKILL — Stage 6: Self-Check ===
+=== AUTOMATIC SKILL — Stage 7: Self-Check ===
 Skill directory: ${skillDir}
 
 Perform a rigorous self-check. This is the last gate before upload.
@@ -88,13 +88,13 @@ OUTPUT FORMAT (JSON):
 }
 
 If verdict is NEEDS_FIX: apply all fixes and re-run self-check until READY_TO_UPLOAD.
-If READY_TO_UPLOAD: proceed to Stage 7: node scripts/upload.js ${skillDir}
+If READY_TO_UPLOAD: proceed to Stage 8: node scripts/upload.js ${skillDir}
 
 Update data/current-pipeline.json: add "selfCheck" key with the report above.
 `);
 } else {
   console.log(`
-=== AUTOMATIC SKILL — 阶段 6：自检 ===
+=== AUTOMATIC SKILL — 阶段 7：自检 ===
 Skill 目录：${skillDir}
 
 执行严格的自检。这是上传前的最后关卡。
@@ -148,7 +148,7 @@ Slug 一致性检查：
 }
 
 如果 verdict 为 NEEDS_FIX：应用所有修复并重新自检，直到 READY_TO_UPLOAD。
-如果 READY_TO_UPLOAD：进入阶段 7：node scripts/upload.js ${skillDir}
+如果 READY_TO_UPLOAD：进入阶段 8：node scripts/upload.js ${skillDir}
 
 更新 data/current-pipeline.json：添加 "selfCheck" 键，值为上述报告。
 `);

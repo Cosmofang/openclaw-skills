@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Automatic Skill — Stage 5: Self-Run (自跑)
+ * Automatic Skill — Stage 6: Self-Run (自跑)
  * 输出 Agent 执行 prompt，指导其执行新 skill 的每个脚本并验证输出无报错。
  *
  * 用法:
@@ -36,7 +36,7 @@ const skillName = path.basename(skillDir);
 
 if (lang === 'en') {
   console.log(`
-=== AUTOMATIC SKILL — Stage 5: Self-Run ===
+=== AUTOMATIC SKILL — Stage 6: Self-Run ===
 Skill directory: ${skillDir}
 Skill name: ${skillName}
 
@@ -85,13 +85,13 @@ OUTPUT FORMAT (JSON):
 }
 
 If verdict is FAIL: fix the crashing scripts, then re-run self-run.
-If PASS or PASS_WITH_WARNINGS: proceed to Stage 6: node scripts/self-check.js ${skillDir}
+If PASS or PASS_WITH_WARNINGS: proceed to Stage 7: node scripts/self-check.js ${skillDir}
 
 Update data/current-pipeline.json: add "selfRun" key with the report above.
 `);
 } else {
   console.log(`
-=== AUTOMATIC SKILL — 阶段 5：自跑 ===
+=== AUTOMATIC SKILL — 阶段 6：自跑 ===
 Skill 目录：${skillDir}
 Skill 名称：${skillName}
 
@@ -139,7 +139,7 @@ Skill 名称：${skillName}
 }
 
 如果 verdict 为 FAIL：修复崩溃的脚本，然后重新自跑。
-如果 PASS 或 PASS_WITH_WARNINGS：进入阶段 6：node scripts/self-check.js ${skillDir}
+如果 PASS 或 PASS_WITH_WARNINGS：进入阶段 7：node scripts/self-check.js ${skillDir}
 
 更新 data/current-pipeline.json：添加 "selfRun" 键，值为上述报告。
 `);

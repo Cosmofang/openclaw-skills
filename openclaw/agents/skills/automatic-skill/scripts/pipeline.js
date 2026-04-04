@@ -49,25 +49,26 @@ if (existingPipeline && fromStage === 1) {
 }
 
 const stages = [
-  { n: 1, name: 'Research',     cmd: `node ${scriptDir}/research.js` },
-  { n: 2, name: 'Design',       cmd: `node ${scriptDir}/design.js --from-pipeline` },
-  { n: 3, name: 'Create',       cmd: `node ${scriptDir}/create.js --from-pipeline` },
-  { n: 4, name: 'Review',       cmd: `node ${scriptDir}/review.js --from-pipeline` },
-  { n: 5, name: 'Self-Run',     cmd: `node ${scriptDir}/self-run.js --from-pipeline` },
-  { n: 6, name: 'Self-Check',   cmd: `node ${scriptDir}/self-check.js --from-pipeline` },
-  { n: 7, name: 'Upload',       cmd: `node ${scriptDir}/upload.js${dryRun ? ' --dry-run' : ''} --from-pipeline` },
-  { n: 8, name: 'Verify',       cmd: `node ${scriptDir}/verify-upload.js --from-pipeline` },
-  { n: 9, name: 'Final Review', cmd: `node ${scriptDir}/final-review.js --from-pipeline` },
+  { n: 1,  name: 'Research',     cmd: `node ${scriptDir}/research.js` },
+  { n: 2,  name: 'Design',       cmd: `node ${scriptDir}/design.js --from-pipeline` },
+  { n: 3,  name: 'SEO',          cmd: `node ${scriptDir}/seo.js --from-pipeline` },
+  { n: 4,  name: 'Create',       cmd: `node ${scriptDir}/create.js --from-pipeline` },
+  { n: 5,  name: 'Review',       cmd: `node ${scriptDir}/review.js --from-pipeline` },
+  { n: 6,  name: 'Self-Run',     cmd: `node ${scriptDir}/self-run.js --from-pipeline` },
+  { n: 7,  name: 'Self-Check',   cmd: `node ${scriptDir}/self-check.js --from-pipeline` },
+  { n: 8,  name: 'Upload',       cmd: `node ${scriptDir}/upload.js${dryRun ? ' --dry-run' : ''} --from-pipeline` },
+  { n: 9,  name: 'Verify',       cmd: `node ${scriptDir}/verify-upload.js --from-pipeline` },
+  { n: 10, name: 'Final Review', cmd: `node ${scriptDir}/final-review.js --from-pipeline` },
 ];
 
-const activeStages = dryRun ? stages.slice(0, 6) : stages;
+const activeStages = dryRun ? stages.slice(0, 7) : stages;
 const pendingStages = activeStages.filter(s => s.n >= fromStage);
 
 if (lang === 'en') {
   console.log(`
 === AUTOMATIC SKILL — Full Pipeline Orchestrator ===
 Date: ${dateISO}
-Mode: ${dryRun ? 'DRY-RUN (stages 1-6 only)' : 'FULL (all 9 stages)'}
+Mode: ${dryRun ? 'DRY-RUN (stages 1-7 only)' : 'FULL (all 10 stages)'}
 ${idea ? `Idea: ${idea}` : 'Idea: auto-select from research'}
 ${fromStage > 1 ? `Resuming from stage: ${fromStage}` : 'Starting from: stage 1'}
 
@@ -76,7 +77,7 @@ Do not skip stages. If a stage fails, fix the issue and re-run that stage before
 
 EXECUTION PLAN:
 ${pendingStages.map(s => `  Stage ${s.n}: ${s.name}`).join('\n')}
-${dryRun ? '\n⚠️  DRY-RUN: Stages 7-9 (Upload, Verify, Final Review) will be skipped.' : ''}
+${dryRun ? '\n⚠️  DRY-RUN: Stages 8-10 (Upload, Verify, Final Review) will be skipped.' : ''}
 
 BEFORE STARTING:
 1. Ensure environment variables are set:
@@ -113,7 +114,7 @@ BEGIN with Stage ${fromStage}: run the command listed above for Stage ${fromStag
   console.log(`
 === AUTOMATIC SKILL — 全流水线编排器 ===
 日期：${dateISO}
-模式：${dryRun ? 'DRY-RUN（仅阶段 1-6）' : '完整（全部 9 个阶段）'}
+模式：${dryRun ? 'DRY-RUN（仅阶段 1-7）' : '完整（全部 10 个阶段）'}
 ${idea ? `主题：${idea}` : '主题：由调研阶段自动选定'}
 ${fromStage > 1 ? `从阶段 ${fromStage} 继续` : '从阶段 1 开始'}
 
@@ -122,7 +123,7 @@ ${fromStage > 1 ? `从阶段 ${fromStage} 继续` : '从阶段 1 开始'}
 
 执行计划：
 ${pendingStages.map(s => `  阶段 ${s.n}：${s.name}`).join('\n')}
-${dryRun ? '\n⚠️  DRY-RUN：阶段 7-9（上传、验收、复查）将跳过。' : ''}
+${dryRun ? '\n⚠️  DRY-RUN：阶段 8-10（上传、验收、复查）将跳过。' : ''}
 
 开始前：
 1. 确保已设置环境变量：

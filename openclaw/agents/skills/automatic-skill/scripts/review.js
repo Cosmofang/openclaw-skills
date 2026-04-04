@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Automatic Skill — Stage 4: Review (审核)
+ * Automatic Skill — Stage 5: Review (审核)
  * 输出 Agent 执行 prompt，指导其对照质量检查单验证生成的 Skill。
  *
  * 用法:
@@ -34,7 +34,7 @@ if (!skillDir) {
 
 if (lang === 'en') {
   console.log(`
-=== AUTOMATIC SKILL — Stage 4: Review ===
+=== AUTOMATIC SKILL — Stage 5: Review ===
 Skill directory: ${skillDir}
 
 Review the generated skill against this quality checklist. Mark each item PASS / FAIL / WARNING.
@@ -87,13 +87,13 @@ Produce a review report in this JSON format:
 }
 
 If verdict is FAIL: fix each failure in the files, then re-run review.
-If verdict is PASS or PASS_WITH_WARNINGS: proceed to Stage 5: node scripts/self-run.js ${skillDir}
+If verdict is PASS or PASS_WITH_WARNINGS: proceed to Stage 6: node scripts/self-run.js ${skillDir}
 
 Update data/current-pipeline.json: add "review" key with the report above.
 `);
 } else {
   console.log(`
-=== AUTOMATIC SKILL — 阶段 4：审核 ===
+=== AUTOMATIC SKILL — 阶段 5：审核 ===
 Skill 目录：${skillDir}
 
 对照以下质量检查单审核生成的 skill。对每一项标注 通过 / 失败 / 警告。
@@ -146,7 +146,7 @@ Skill 目录：${skillDir}
 }
 
 如果 verdict 为 FAIL：修复文件中的每个失败项，然后重新运行审核。
-如果 verdict 为 PASS 或 PASS_WITH_WARNINGS：进入阶段 5：node scripts/self-run.js ${skillDir}
+如果 verdict 为 PASS 或 PASS_WITH_WARNINGS：进入阶段 6：node scripts/self-run.js ${skillDir}
 
 更新 data/current-pipeline.json：添加 "review" 键，值为上述报告。
 `);

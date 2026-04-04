@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Automatic Skill — Stage 8: Verify Upload (验收)
+ * Automatic Skill — Stage 9: Verify Upload (验收)
  * 输出 Agent 执行 prompt，指导其通过 GitHub API 和 clawHub API 确认 skill 已成功上线。
  *
  * 用法:
@@ -40,7 +40,7 @@ if (!slug) {
 
 if (lang === 'en') {
   console.log(`
-=== AUTOMATIC SKILL — Stage 8: Verify Upload ===
+=== AUTOMATIC SKILL — Stage 9: Verify Upload ===
 Skill slug: ${slug}
 Commit hash: ${commitHash || '(read from pipeline)'}
 GitHub repo: ${githubRepo || '$GITHUB_REPO'}
@@ -105,13 +105,13 @@ CHECK 6 — Verify skill is searchable (optional)
 }
 
 If overallVerdict is FAILED: identify which upload step failed and re-run upload.js.
-If FULLY_VERIFIED or PARTIAL: proceed to Stage 9: node scripts/final-review.js ${slug}
+If FULLY_VERIFIED or PARTIAL: proceed to Stage 10: node scripts/final-review.js ${slug}
 
 Update data/current-pipeline.json: add "verifyUpload" key with the report above.
 `);
 } else {
   console.log(`
-=== AUTOMATIC SKILL — 阶段 8：验收 ===
+=== AUTOMATIC SKILL — 阶段 9：验收 ===
 Skill slug：${slug}
 Commit hash：${commitHash || '（从 pipeline 读取）'}
 GitHub 仓库：${githubRepo || '$GITHUB_REPO'}
@@ -176,7 +176,7 @@ GitHub 仓库：${githubRepo || '$GITHUB_REPO'}
 }
 
 如果 overallVerdict 为 FAILED：确定哪个上传步骤失败，重新运行 upload.js。
-如果 FULLY_VERIFIED 或 PARTIAL：进入阶段 9：node scripts/final-review.js ${slug}
+如果 FULLY_VERIFIED 或 PARTIAL：进入阶段 10：node scripts/final-review.js ${slug}
 
 更新 data/current-pipeline.json：添加 "verifyUpload" 键，值为上述报告。
 `);

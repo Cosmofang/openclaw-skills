@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Automatic Skill — Stage 9: Final Review (复查)
+ * Automatic Skill — Stage 10: Final Review (复查)
  * 输出 Agent 执行 prompt，指导其生成完整的流水线报告并写入 pipeline-log.json。
  *
  * 用法:
@@ -40,7 +40,7 @@ const logPath = path.join(dataDir, 'pipeline-log.json');
 
 if (lang === 'en') {
   console.log(`
-=== AUTOMATIC SKILL — Stage 9: Final Review ===
+=== AUTOMATIC SKILL — Stage 10: Final Review ===
 Skill: ${slug}
 
 This is the final stage. Compile a comprehensive report and archive the pipeline run.
@@ -68,15 +68,16 @@ Date:         <date>
 Total Time:   <duration>
 
 PIPELINE STAGES:
-  ✅ Stage 1 Research   — Completed at <time>  (<N> ideas evaluated)
-  ✅ Stage 2 Design     — Completed at <time>
-  ✅ Stage 3 Create     — Completed at <time>  (<N> files created)
-  ✅ Stage 4 Review     — Score: <N>/100  (<N> iterations)
-  ✅ Stage 5 Self-Run   — <N> scripts tested, <N> passed
-  ✅ Stage 6 Self-Check — Score: <N>/100  (<N> checks passed)
-  ✅ Stage 7 Upload     — GitHub: <status>  clawHub: <status>
-  ✅ Stage 8 Verify     — GitHub: VERIFIED  clawHub: VERIFIED
-  ✅ Stage 9 Final Review — COMPLETE
+  ✅ Stage 1  Research    — Completed at <time>  (<N> ideas evaluated)
+  ✅ Stage 2  Design      — Completed at <time>
+  ✅ Stage 3  SEO         — displayName: <name>  keywords: <N>
+  ✅ Stage 4  Create      — Completed at <time>  (<N> files created)
+  ✅ Stage 5  Review      — Score: <N>/100  (<N> iterations)
+  ✅ Stage 6  Self-Run    — <N> scripts tested, <N> passed
+  ✅ Stage 7  Self-Check  — Score: <N>/100  (<N> checks passed)
+  ✅ Stage 8  Upload      — GitHub: <status>  clawHub: <status>
+  ✅ Stage 9  Verify      — GitHub: VERIFIED  clawHub: VERIFIED
+  ✅ Stage 10 Final Review — COMPLETE
 
 SKILL SUMMARY:
   Name:        <full name>
@@ -123,7 +124,7 @@ DONE. Pipeline complete. ✅
 `);
 } else {
   console.log(`
-=== AUTOMATIC SKILL — 阶段 9：复查 ===
+=== AUTOMATIC SKILL — 阶段 10：复查 ===
 Skill：${slug}
 
 这是最后阶段。编写完整报告并归档本次流水线运行记录。
