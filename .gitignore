@@ -4,3 +4,4 @@ node_modules/
 data/users/*.json
 data/pipeline.lock
 data/current-pipeline.json
+data/users/*.json
