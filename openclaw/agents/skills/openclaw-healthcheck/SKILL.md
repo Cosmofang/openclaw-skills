@@ -1,5 +1,5 @@
 ---
-name: openclaw-healthcheck
+name: openclaw-push-doctor
 description: |
   openclaw-healthcheck is a self-diagnostic skill that checks and repairs openclaw's communication channels and scheduled tasks. It diagnoses Feishu/lark-cli auth expiry, Telegram bot silence, WeChat bridge disconnects, and cron job failures — then guides the agent through targeted repairs without rebuilding everything from scratch.
 

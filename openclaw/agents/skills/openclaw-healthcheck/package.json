@@ -1,5 +1,5 @@
 {
-  "name": "openclaw-healthcheck",
+  "name": "openclaw-push-doctor",
   "version": "1.0.0",
   "description": "Self-diagnostic skill for openclaw: checks Feishu/Telegram/WeChat connectivity and cron task health",
   "keywords": [
