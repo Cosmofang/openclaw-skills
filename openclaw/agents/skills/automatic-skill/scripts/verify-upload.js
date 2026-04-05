@@ -24,14 +24,15 @@ let version = '';
 let prNumber = null;
 let workflow = 'direct-push';
 
-// Read for display in prompt text only — never sent over network by this script
-const githubRepo = process.env.GITHUB_REPO || '';
+function loadPipelineState() {
+  const pipelinePath = path.join(__dirname, '..', 'data', 'current-pipeline.json');
+  if (!fs.existsSync(pipelinePath)) return null;
+  return JSON.parse(fs.readFileSync(pipelinePath, 'utf8'));
+}
 
 if (args.includes('--from-pipeline')) {
-  // Read local pipeline state file — no network I/O
-  const pipelinePath = path.join(__dirname, '..', 'data', 'current-pipeline.json');
-  if (fs.existsSync(pipelinePath)) {
-    const p = JSON.parse(fs.readFileSync(pipelinePath, 'utf8'));
+  const p = loadPipelineState();
+  if (p) {
     slug = (p.design && p.design.slug)
       || (p.research && p.research.selected && p.research.selected.slug)
       || '';
@@ -53,7 +54,7 @@ if (!slug) {
   process.exit(1);
 }
 
-const repo = githubRepo || '$GITHUB_REPO';
+const repo = '$GITHUB_REPO';
 const skillPath = `openclaw/agents/skills/${slug}`;
 
 if (lang === 'en') {
