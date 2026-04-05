@@ -1,0 +1,4 @@
+data/current-pipeline.json
+data/pipeline.lock
+.DS_Store
+node_modules/
