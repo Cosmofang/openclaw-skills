@@ -83,8 +83,9 @@ node scripts/create.js --from-pipeline     # output create prompt
 node scripts/review.js /path/skill-dir     # output review prompt
 node scripts/self-run.js /path/skill-dir   # output self-run prompt
 node scripts/self-check.js /path/skill-dir # output self-check prompt
-node scripts/upload.js /path/skill-dir     # output upload prompt
-node scripts/verify-upload.js skill-name   # output verify prompt
+node scripts/upload.js /path/skill-dir     # output upload prompt (direct push)
+node scripts/upload.js --pr /path/skill-dir  # output upload prompt (PR workflow)
+node scripts/verify-upload.js skill-name   # output verify prompt (gh api checks)
 node scripts/final-review.js skill-name    # output final review prompt
 
 # Status & history
@@ -139,10 +140,13 @@ scripts/
 
 1. Required env vars: `GITHUB_TOKEN`, `GITHUB_REPO`, `CLAWHUB_TOKEN`
 2. Optional: `CLAWHUB_OWNER_ID` (your clawHub owner ID), `SKILL_OUTPUT_DIR` (default: `~/.openclaw/workspace/skills`)
-3. On any stage failure the pipeline stops and logs the error — no partial overwrites
-4. `--dry-run` stops after self-check, no network operations
-5. Full run history in `data/pipeline-log.json`
-6. All scripts are prompt generators only — no outbound network requests are made by the scripts themselves
+3. **GitHub operations use the `gh` CLI** (inspired by [steipete/github](https://clawhub.ai/steipete/github)): `gh auth status`, `gh repo view`, `gh api`, `gh pr create`. Install with `brew install gh` and run `gh auth login` before first use.
+4. Stage 8 supports `--pr` flag for a PR-based GitHub workflow instead of direct push to main.
+5. Stage 9 verifies GitHub state live via `gh api repos/{repo}/contents/{path}` — no `git fetch` needed.
+6. On any stage failure the pipeline stops and logs the error — no partial overwrites
+7. `--dry-run` stops after self-check, no network operations
+8. Full run history in `data/pipeline-log.json`
+9. All scripts are prompt generators only — no outbound network requests are made by the scripts themselves
 
 ---
 
@@ -174,4 +178,4 @@ export SKILL_OUTPUT_DIR=~/.openclaw/workspace/skills  # optional
 
 ---
 
-*Version: 1.1.2 · Created: 2026-04-04 · Updated: 2026-04-05*
+*Version: 1.1.3 · Created: 2026-04-04 · Updated: 2026-04-05*
