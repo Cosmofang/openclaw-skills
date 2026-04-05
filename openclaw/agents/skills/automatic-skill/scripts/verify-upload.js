@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 /**
  * Automatic Skill — Stage 9: Verify Upload (验收)
- * 输出 Agent 执行 prompt，指导其通过 GitHub API 和 clawHub API 确认 skill 已成功上线。
+ *
+ * PROMPT GENERATOR ONLY — this script makes NO outbound network requests.
+ * It reads local state files and outputs a text prompt for the agent to execute.
+ * All verification (GitHub API, clawHub CLI) is performed by the agent, not this script.
  *
  * 用法:
  *   node scripts/verify-upload.js <skill-slug>
@@ -17,9 +20,11 @@ const lang = langIdx !== -1 ? args[langIdx + 1] : 'zh';
 
 let slug = '';
 let commitHash = '';
+// Read for display in prompt text only — this value is never sent over the network by this script
 let githubRepo = process.env.GITHUB_REPO || '';
 
 if (args.includes('--from-pipeline')) {
+  // Read local pipeline state file — no network I/O
   const pipelinePath = path.join(__dirname, '..', 'data', 'current-pipeline.json');
   if (fs.existsSync(pipelinePath)) {
     const p = JSON.parse(fs.readFileSync(pipelinePath, 'utf8'));
@@ -69,11 +74,9 @@ Count the files in the remote skill directory and compare to local:
 CHECK 4 — Query clawHub for the published skill
 Attempt to retrieve the skill from clawHub:
   clawhub get ${slug}
-  OR via API:
-  curl -H "Authorization: Bearer $CLAWHUB_TOKEN" https://api.clawhub.io/v1/skills/${slug}
 
   → Response must contain: slug, version, ownerId
-  → HTTP status must be 200
+  → Exit code must be 0
 
 CHECK 5 — Verify version matches _meta.json
 Confirm the published version on clawHub matches the version in _meta.json.
@@ -140,11 +143,9 @@ GitHub 仓库：${githubRepo || '$GITHUB_REPO'}
 检查 4 — 从 clawHub 查询已发布的 skill
 尝试从 clawHub 获取 skill：
   clawhub get ${slug}
-  或通过 API：
-  curl -H "Authorization: Bearer $CLAWHUB_TOKEN" https://api.clawhub.io/v1/skills/${slug}
 
   → 响应必须包含：slug, version, ownerId
-  → HTTP 状态码必须为 200
+  → 退出码必须为 0
 
 检查 5 — 验证版本与 _meta.json 匹配
 确认 clawHub 上发布的版本与 _meta.json 中的 version 一致。

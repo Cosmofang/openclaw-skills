@@ -48,6 +48,8 @@ if (args.includes('--from-pipeline')) {
 }
 
 const slug = (seo && seo.slug) || design.slug || 'unknown-skill';
+// Read ownerId from env — never hardcode credentials in prompt instructions
+const ownerId = process.env.CLAWHUB_OWNER_ID || '<your-clawhub-owner-id>';
 const displayName = (seo && seo.displayName) || design.slug || slug;
 const fullDescription = (seo && seo.fullDescription) || (design.skillMdOutline && design.skillMdOutline.frontmatter && design.skillMdOutline.frontmatter.description) || '';
 const keywords = (seo && seo.keywords) || (design.skillMdOutline && design.skillMdOutline.frontmatter && design.skillMdOutline.frontmatter.keywords) || [];
@@ -85,7 +87,7 @@ CREATION RULES:
    - All sections from the design outline
 4. Scripts: each script must be a standalone Node.js file. It must print a prompt (console.log) that tells the agent exactly what to do. Include input validation and helpful error messages.
 5. package.json: use SEO displayName, shortDescription, and keywords. Include name, version, description, keywords, scripts map.
-6. _meta.json: ownerId "kn79bebfnwg15sb0g7cj5z5nyd83gxh0", slug, version "1.0.0", publishedAt null.
+6. _meta.json: ownerId "${ownerId}", slug, version "1.0.0", publishedAt null.
 7. .clawhub/origin.json: same ownerId and slug.
 8. data/ files: create with empty arrays or objects as in dataSchemas.
 
@@ -121,7 +123,7 @@ ${seoNote}
    - 包含设计大纲中的所有章节
 4. 脚本：每个脚本必须是独立的 Node.js 文件，通过 console.log 打印 prompt，包含输入校验和友好错误提示。
 5. package.json：使用 SEO 展示名称、简短描述和关键词，包含 name、version、description、keywords、scripts 映射。
-6. _meta.json：ownerId "kn79bebfnwg15sb0g7cj5z5nyd83gxh0"，slug 来自设计，version "1.0.0"，publishedAt null。
+6. _meta.json：ownerId "${ownerId}"，slug 来自设计，version "1.0.0"，publishedAt null。
 7. .clawhub/origin.json：同样的 ownerId 和 slug。
 8. data/ 文件：按 dataSchemas 规格创建空数组或空对象。
 

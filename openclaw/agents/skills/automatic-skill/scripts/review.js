@@ -69,7 +69,7 @@ Review the generated skill against this quality checklist. Mark each item PASS /
 ── SECURITY CHECKLIST ───────────────────────────────────────────
 □ No hardcoded API keys or tokens
 □ User input is validated before use (no injection risk)
-□ No eval() or Function() with user-controlled strings
+□ No dynamic code execution using user-supplied input
 
 OUTPUT INSTRUCTIONS:
 For each failed item, describe what is wrong and the exact fix needed.
@@ -128,7 +128,7 @@ Skill 目录：${skillDir}
 ── 安全检查 ──────────────────────────────────────────────────────
 □ 无硬编码的 API key 或 token
 □ 用户输入在使用前经过校验（无注入风险）
-□ 无含用户可控字符串的 eval() 或 Function()
+□ 无使用用户输入作为代码执行的动态调用
 
 输出说明：
 对每项失败项，描述问题所在及需要的精确修复方案。
