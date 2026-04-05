@@ -5,6 +5,40 @@ description: |
 
   Trigger words: 自动生成skill, 每日skill, 自动制作技能, 今日skill, skill流水线, 生成新skill, automatic skill, daily skill, skill pipeline, auto build skill, skill factory, 技能工厂, 自动化技能开发
 keywords: 自动skill, 每日skill, skill流水线, 技能工厂, 自动开发, 自动测试, 自动发布, 元技能, automatic skill, skill pipeline, skill factory, meta skill, daily skill, auto build, auto test, auto publish
+requirements:
+  node: ">=18"
+  binaries:
+    - name: gh
+      required: true
+      description: "GitHub CLI — used for auth, repo access, push verification, and PR creation."
+    - name: git
+      required: true
+      description: "Git — used for staging, committing, and pushing skill files."
+    - name: clawhub
+      required: true
+      description: "ClawHub CLI — used for publishing skills to the registry."
+    - name: npx
+      required: false
+      description: "Node package runner — used optionally during skill creation stage."
+  env:
+    - name: GITHUB_TOKEN
+      required: true
+      description: "GitHub personal access token with repo write permission (narrowly scoped to a single repo)."
+    - name: GITHUB_REPO
+      required: true
+      description: "Target repository in owner/repo format, e.g. myorg/openclaw-skills"
+    - name: CLAWHUB_TOKEN
+      required: true
+      description: "ClawHub API token for publishing skills to the registry."
+    - name: CLAWHUB_OWNER_ID
+      required: false
+      description: "ClawHub ownerId override. Defaults to the publishing account."
+    - name: SKILL_OUTPUT_DIR
+      required: false
+      description: "Directory where generated skills are written. Defaults to ~/.openclaw/workspace/skills."
+    - name: OPENCLAW_NOTIFY_CHANNEL
+      required: false
+      description: "Notification channel for pipeline failure alerts (e.g. slack://...)."
 metadata:
   openclaw:
     runtime:
@@ -25,6 +59,9 @@ metadata:
       - name: SKILL_OUTPUT_DIR
         required: false
         description: "Where generated skills are written. Defaults to ~/.openclaw/workspace/skills."
+      - name: OPENCLAW_NOTIFY_CHANNEL
+        required: false
+        description: "Notification channel for pipeline failure alerts."
 ---
 
 # Automatic Skill — 每日 Skill 自动工厂
