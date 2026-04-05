@@ -74,11 +74,11 @@ AFTER PIPELINE COMPLETES:
     3. Send a failure notification (if OPENCLAW_NOTIFY_CHANNEL is set):
        "❌ Daily skill pipeline FAILED on ${dateISO}. Error: <error message>"
 
-ENVIRONMENT CHECKS (verify before starting):
-- GITHUB_TOKEN: ${process.env.GITHUB_TOKEN ? 'SET ✅' : 'NOT SET ❌ (upload will fail)'}
-- GITHUB_REPO: ${process.env.GITHUB_REPO ? process.env.GITHUB_REPO + ' ✅' : 'NOT SET ❌ (upload will fail)'}
-- CLAWHUB_TOKEN: ${process.env.CLAWHUB_TOKEN ? 'SET ✅' : 'NOT SET ❌ (publish will fail)'}
-- SKILL_OUTPUT_DIR: ${process.env.SKILL_OUTPUT_DIR || '~/.openclaw/workspace/skills (default)'}
+ENVIRONMENT CHECKS (run each command to verify before starting):
+- GITHUB_TOKEN:      gh auth status   (must show: ✓ Logged in to github.com)
+- GITHUB_REPO:       echo $GITHUB_REPO   (must print owner/repo, e.g. myorg/mycli)
+- CLAWHUB_TOKEN:     clawhub whoami   (must return your clawHub username without error)
+- SKILL_OUTPUT_DIR:  echo ${process.env.SKILL_OUTPUT_DIR || '~/.openclaw/workspace/skills (default)'}
 ${dryRun ? '\nDRY-RUN: upload stages will be skipped regardless of env vars.' : ''}
 
 START THE PIPELINE: node ${scriptDir}/pipeline.js${dryRun ? ' --dry-run' : ''}

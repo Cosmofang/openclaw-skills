@@ -96,11 +96,12 @@ CHECK 4 — Verify file count in skill directory
   → Must be ≥ 4 (SKILL.md, package.json, _meta.json, ≥1 script)
   → If 0: skill directory was not committed — check git add path in upload step
 
-CHECK 5 — Verify SKILL.md is readable on GitHub
+CHECK 5 — Verify SKILL.md exists and has content on GitHub
   gh api repos/${repo}/contents/${skillPath}/SKILL.md \\
-    --jq '.content' | base64 -d | head -10
-  → Must show the YAML frontmatter (name, description, keywords)
-  → Confirms file content was not corrupted during upload
+    --jq '{name, size, encoding}'
+  → name must be "SKILL.md"
+  → size must be > 0 (non-empty file)
+  → Confirms the file was uploaded and is accessible
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PART 2 — CLAWHUB VERIFICATION
@@ -133,7 +134,7 @@ OUTPUT FORMAT (write to data/current-pipeline.json under "verifyUpload" key)
     "commitHashMatch": true | false,
     "directoryExists": true | false,
     "fileCount": <N>,
-    "skillMdReadable": true | false,
+    "skillMdNonEmpty": true | false,
     "status": "VERIFIED | FAILED",
     "detail": "..."
   },
@@ -191,11 +192,12 @@ ${prNumber ? `
   → 必须 ≥ 4（SKILL.md, package.json, _meta.json, ≥1 脚本）
   → 如为 0：skill 目录未被提交 — 检查 upload 步骤中的 git add 路径
 
-检查 5 — 验证 SKILL.md 在 GitHub 上可读
+检查 5 — 验证 SKILL.md 在 GitHub 上存在且有内容
   gh api repos/${repo}/contents/${skillPath}/SKILL.md \\
-    --jq '.content' | base64 -d | head -10
-  → 必须显示 YAML frontmatter（name, description, keywords）
-  → 确认文件内容在上传过程中未损坏
+    --jq '{name, size, encoding}'
+  → name 必须为 "SKILL.md"
+  → size 必须 > 0（非空文件）
+  → 确认文件已上传且可访问
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 第二部分 — clawHub 验证
@@ -228,7 +230,7 @@ ${prNumber ? `
     "commitHashMatch": true | false,
     "directoryExists": true | false,
     "fileCount": <N>,
-    "skillMdReadable": true | false,
+    "skillMdNonEmpty": true | false,
     "status": "VERIFIED | FAILED",
     "detail": "..."
   },

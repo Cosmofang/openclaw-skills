@@ -79,7 +79,7 @@ CHECK 2 — Verify repo access
 Run: gh repo view ${githubRepo} --json name,defaultBranchRef,url
 → Must return JSON with name and defaultBranchRef.name = "main"
 → If 404: verify GITHUB_REPO is correct (format: owner/repo)
-→ If permission denied: check token scopes with: gh auth status --show-token
+→ If permission denied: check token scopes with: gh auth status (look for the scopes list)
 
 CHECK 3 — Confirm skill directory exists locally
 Run: ls -la ${skillDir}/SKILL.md ${skillDir}/package.json ${skillDir}/_meta.json
@@ -144,9 +144,10 @@ ${dryRun ? `DRY-RUN: would run:
 PART 3 — CLAWHUB PUBLISH
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-STEP 7 — Check clawHub token
-  echo $CLAWHUB_TOKEN | head -c 8  (prints first 8 chars only, do not print full token)
-  → Must be non-empty. If not set: export CLAWHUB_TOKEN=<your-token>
+STEP 7 — Verify clawHub authentication
+  clawhub whoami
+  → Must return your clawHub username (exit code 0)
+  → If error: set CLAWHUB_TOKEN in your shell environment and retry
 
 STEP 8 — Publish to clawHub${dryRun ? ' (SKIPPED — dry-run)' : ''}
 ${dryRun
@@ -209,7 +210,7 @@ GitHub 仓库：${githubRepo}
 运行：gh repo view ${githubRepo} --json name,defaultBranchRef,url
 → 必须返回 JSON，其中 defaultBranchRef.name = "main"
 → 如 404：检查 GITHUB_REPO 格式是否为 "owner/repo"
-→ 如权限拒绝：gh auth status --show-token 检查 token scopes
+→ 如权限拒绝：gh auth status 检查 token scopes（查看输出中的 scopes 列表）
 
 检查 3 — 确认 skill 目录在本地存在
 运行：ls -la ${skillDir}/SKILL.md ${skillDir}/package.json ${skillDir}/_meta.json
@@ -273,9 +274,10 @@ ${dryRun ? `DRY-RUN：将运行：
 第三部分 — clawHub 发布
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-步骤 7 — 检查 clawHub token
-  echo $CLAWHUB_TOKEN | head -c 8  （只打印前 8 位，切勿打印完整 token）
-  → 必须非空。如未设置：export CLAWHUB_TOKEN=<your-token>
+步骤 7 — 验证 clawHub 认证
+  clawhub whoami
+  → 必须返回你的 clawHub 用户名（退出码 0）
+  → 如报错：在 shell 环境中设置 CLAWHUB_TOKEN 后重试
 
 步骤 8 — 发布到 clawHub${dryRun ? '（已跳过 — dry-run）' : ''}
 ${dryRun
