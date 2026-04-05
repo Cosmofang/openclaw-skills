@@ -10,19 +10,28 @@ keywords: openclaw healthcheck, 飞书自检, telegram修复, 定时任务检查
 requirements:
   node: ">=18"
   binaries:
+    - name: curl
+      required: true
+      description: "Used for Telegram bot API health checks (getMe, getUpdates, sendMessage)."
+    - name: python3
+      required: true
+      description: "Used to parse JSON responses from Telegram API and update config files."
+    - name: pgrep
+      required: true
+      description: "Used to check if WeChat bridge process and openclaw daemon are running."
     - name: lark-cli
       required: false
       description: "Feishu/Lark CLI — required if using Feishu channel."
-    - name: curl
-      required: true
-      description: "Used for Telegram bot API health checks."
     - name: crontab
       required: false
-      description: "Used for reading system cron jobs if openclaw uses system cron."
+      description: "Used to read, deduplicate, and repair system cron entries."
   env:
     - name: TELEGRAM_BOT_TOKEN
       required: false
-      description: "Telegram bot token — required for Telegram channel checks."
+      description: "Telegram bot token — required for Telegram channel checks and test sends."
+    - name: TELEGRAM_CHAT_ID
+      required: false
+      description: "Telegram chat/group ID — used to send test push messages to verify delivery."
     - name: OPENCLAW_CONFIG_DIR
       required: false
       description: "Override path to openclaw config directory. Defaults to ~/.openclaw."
@@ -33,7 +42,7 @@ requirements:
 metadata:
   openclaw:
     always: false
-    disable-model-invocation: false
+    disable-model-invocation: true
 ---
 
 # openclaw-healthcheck — 通讯自检与修复工具
