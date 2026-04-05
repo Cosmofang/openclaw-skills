@@ -20,6 +20,8 @@
     "self-check": "node scripts/self-check.js",
     "upload": "node scripts/upload.js",
     "verify": "node scripts/verify-upload.js",
+    "scan": "node scripts/scan-check.js",
+    "scan:fix": "node scripts/scan-fix.js --check-meta",
     "final-review": "node scripts/final-review.js",
     "status": "node scripts/status.js",
     "status:history": "node scripts/status.js --history",

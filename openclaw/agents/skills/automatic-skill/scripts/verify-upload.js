@@ -151,7 +151,24 @@ OUTPUT FORMAT (write to data/current-pipeline.json under "verifyUpload" key)
 }
 
 If FAILED: identify which check failed, re-run Stage 8 (upload.js) for that part only.
-If FULLY_VERIFIED or PARTIAL: proceed to Stage 10: node scripts/final-review.js --from-pipeline
+If FULLY_VERIFIED or PARTIAL: proceed to Stage 9b: node scripts/scan-check.js --from-pipeline
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PART 3 — SECURITY SCAN (VirusTotal + OpenClaw)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After confirming clawHub publish succeeded, check security ratings:
+
+  node scripts/scan-check.js --from-pipeline
+
+This will:
+  1. Wait for VirusTotal and OpenClaw scan results (polls up to 5 min)
+  2. Run static analysis on the skill's scripts for known trigger patterns
+  3. If Suspicious: output targeted fix instructions + re-publish guidance
+  4. Repeat until PASS or max 3 attempts reached
+
+→ PASS or TIMEOUT:   proceed to Stage 10: node scripts/final-review.js --from-pipeline
+→ SUSPICIOUS (after fixes): proceed to Stage 10 with a scan warning in the final report
 `);
 } else {
   console.log(`=== AUTOMATIC SKILL — 阶段 9：验收 ===
@@ -247,6 +264,23 @@ ${prNumber ? `
 }
 
 如果 FAILED：确定哪项检查失败，仅针对该部分重新运行阶段 8（upload.js）。
-如果 FULLY_VERIFIED 或 PARTIAL：进入阶段 10：node scripts/final-review.js --from-pipeline
+如果 FULLY_VERIFIED 或 PARTIAL：进入阶段 9b：node scripts/scan-check.js --from-pipeline
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+第三部分 — 安全扫描（VirusTotal + OpenClaw）
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+确认 clawHub 发布成功后，检查安全评级：
+
+  node scripts/scan-check.js --from-pipeline
+
+此命令将：
+  1. 等待 VirusTotal 和 OpenClaw 扫描结果（最多轮询 5 分钟）
+  2. 对 skill 脚本进行静态分析，查找已知触发模式
+  3. 如为 Suspicious：输出针对性修复指令 + 重新发布指引
+  4. 最多重复 3 次，直到 PASS 为止
+
+→ PASS 或 TIMEOUT：进入阶段 10：node scripts/final-review.js --from-pipeline
+→ SUSPICIOUS（修复后仍是）：带扫描警告进入阶段 10，在 final report 中标注
 `);
 }
