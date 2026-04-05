@@ -25,9 +25,14 @@ let prNumber = null;
 let workflow = 'direct-push';
 
 function loadPipelineState() {
-  const pipelinePath = path.join(__dirname, '..', 'data', 'current-pipeline.json');
-  if (!fs.existsSync(pipelinePath)) return null;
-  return JSON.parse(fs.readFileSync(pipelinePath, 'utf8'));
+  try {
+    const p = path.join(__dirname, '..', 'data', 'current-pipeline.json');
+    if (!fs.existsSync(p)) return null;
+    delete require.cache[require.resolve(p)];
+    return require(p);
+  } catch (e) {
+    return null;
+  }
 }
 
 if (args.includes('--from-pipeline')) {
