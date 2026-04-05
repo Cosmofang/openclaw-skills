@@ -75,6 +75,11 @@ ${fromStage > 1 ? `Resuming from stage: ${fromStage}` : 'Starting from: stage 1'
 You are running the complete Automatic Skill pipeline. Execute each stage IN ORDER.
 Do not skip stages. If a stage fails, fix the issue and re-run that stage before proceeding.
 
+LANGUAGE POLICY (follow throughout the entire pipeline):
+- SKILL.md content (name, description, sections, commands): write in ENGLISH
+- Conversational replies to the user: use the user's language (Chinese if user writes in Chinese)
+- All JSON logs, reports, and pipeline state (pipeline-log.json, review scores, etc.): ENGLISH only
+
 EXECUTION PLAN:
 ${pendingStages.map(s => `  Stage ${s.n}: ${s.name}`).join('\n')}
 ${dryRun ? '\n⚠️  DRY-RUN: Stages 8-10 (Upload, Verify, Final Review) will be skipped.' : ''}
@@ -120,6 +125,11 @@ ${fromStage > 1 ? `从阶段 ${fromStage} 继续` : '从阶段 1 开始'}
 
 你正在运行完整的 Automatic Skill 流水线。按顺序执行每个阶段。
 不要跳过阶段。如果某阶段失败，修复问题并重新运行该阶段，再继续下一阶段。
+
+语言规则（整个流水线全程遵守）：
+- SKILL.md 内容（名称、描述、章节、命令）：统一写英文
+- 与用户的对话回复：使用用户的语言（用户说中文则全程回中文）
+- 所有 JSON 日志、报告、流水线状态（pipeline-log.json、审核评分等）：统一英文
 
 执行计划：
 ${pendingStages.map(s => `  阶段 ${s.n}：${s.name}`).join('\n')}

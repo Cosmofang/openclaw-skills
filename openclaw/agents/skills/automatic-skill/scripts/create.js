@@ -91,6 +91,12 @@ CREATION RULES:
 7. .clawhub/origin.json: same ownerId and slug.
 8. data/ files: create with empty arrays or objects as in dataSchemas.
 
+LANGUAGE STANDARDS:
+- SKILL.md name, description, all section headings and body text: write in ENGLISH
+- Keywords: include both English and Chinese terms (bilingual is fine here)
+- Script header comments and usage strings: ENGLISH
+- JSON data files: ENGLISH keys and values
+
 QUALITY STANDARDS:
 - Every script must have a header comment with filename, purpose, and usage.
 - Every script must handle missing args gracefully (print usage + exit 1).
@@ -126,6 +132,12 @@ ${seoNote}
 6. _meta.json：ownerId "${ownerId}"，slug 来自设计，version "1.0.0"，publishedAt null。
 7. .clawhub/origin.json：同样的 ownerId 和 slug。
 8. data/ 文件：按 dataSchemas 规格创建空数组或空对象。
+
+语言标准：
+- SKILL.md 名称、描述、所有章节标题和正文：统一写英文
+- keywords 关键词：中英双语均可
+- 脚本头部注释和用法说明：英文
+- JSON 数据文件：键和值统一英文
 
 质量标准：
 - 每个脚本必须有头部注释（文件名、用途、用法）。
