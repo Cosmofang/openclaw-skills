@@ -70,7 +70,14 @@ If duplicates found:
      # Edit /tmp/crontab_backup.txt to remove duplicate lines
      # Review the diff:
      diff /tmp/crontab_backup.txt <(sort -u /tmp/crontab_backup.txt)
-     # Apply (after user confirms):
+
+     ⚠️  PAUSE: Show the diff output to the user and ask:
+       "I'm about to replace your crontab with the deduplicated version above.
+        The following lines will be removed: [list duplicate lines].
+        Do you confirm? (yes/no)"
+     Only proceed after the user explicitly confirms.
+
+     # Apply ONLY after explicit user confirmation:
      crontab /tmp/crontab_backup.txt
      # Verify:
      crontab -l | grep openclaw
@@ -174,7 +181,14 @@ ${dedup || mode === 'full' ? `第 2 步 — 检测并删除重复条目
      # 编辑 /tmp/crontab_backup.txt，删除重复行
      # 查看差异：
      diff /tmp/crontab_backup.txt <(sort -u /tmp/crontab_backup.txt)
-     # 应用（用户确认后）：
+
+     ⚠️  暂停：将 diff 结果展示给用户，并询问：
+       "我将用以上去重版本替换您的 crontab。
+        以下行将被删除：[列出重复行]。
+        您确认吗？（是/否）"
+     仅在用户明确确认后才执行。
+
+     # 仅在用户明确确认后应用：
      crontab /tmp/crontab_backup.txt
      # 验证：
      crontab -l | grep openclaw
