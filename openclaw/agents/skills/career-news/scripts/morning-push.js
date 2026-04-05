@@ -111,18 +111,13 @@ if (users.length === 0) {
   process.exit(0);
 }
 
-users.forEach((user, i) => {
-  const lang = user.language || 'zh';
-  const profession = profOverride || user.profession || 'developer';
-  const region = user.region || (lang === 'zh' ? 'cn' : 'us');
-  const extraKeywords = (user.keywords || []).join('、');
-  const dateStr = lang === 'en' ? dateStr_en : dateStr_zh;
+// Helper: generate one profession brief block
+function professionBlock(user, profession, lang, region, dateStr, extraKeywords, isExtra) {
   const cfg = (PROFESSION_CONFIG[profession] || PROFESSION_CONFIG['developer'])[lang] || PROFESSION_CONFIG['developer']['en'];
-
-  if (i > 0) console.log('\n' + '─'.repeat(60) + '\n');
+  const tag = isExtra ? ' ★ extra subscription' : ' ✦ primary';
 
   if (lang === 'en') {
-    console.log(`[Career News Morning Push | user: ${user.userId} | profession: ${profession} | lang: en | region: ${region} | ${dateStr}]
+    return `[Career News Morning Push | user: ${user.userId} | profession: ${profession}${tag} | lang: en | region: ${region} | ${dateStr}]
 
 Please search and compile a morning news brief for this user.
 
@@ -163,10 +158,10 @@ Output format:
   → Summary (2 sentences). Source · URL
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔍 One sentence on the most important trend to watch today.`);
+🔍 One sentence on the most important trend to watch today.`;
 
   } else {
-    console.log(`[职业新闻早报 | 用户：${user.userId} | 职业：${profession} | 语言：zh | 地区：${region} | ${dateStr}]
+    return `[职业新闻早报 | 用户：${user.userId} | 职业：${profession}${isExtra ? ' ★ 额外订阅' : ' ✦ 主职业'} | 语言：zh | 地区：${region} | ${dateStr}]
 
 请为该用户搜索并整合今日职业新闻早报。
 
@@ -207,6 +202,45 @@ Output format:
   → 摘要（2句）。来源 · 链接
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔍 今日最值得关注的一个趋势（一句话）。`);
+🔍 今日最值得关注的一个趋势（一句话）。`;
+  }
+}
+
+users.forEach((user, i) => {
+  const lang = user.language || 'zh';
+  const region = user.region || (lang === 'zh' ? 'cn' : 'us');
+  const extraKeywords = (user.keywords || []).join(lang === 'en' ? ', ' : '、');
+  const dateStr = lang === 'en' ? dateStr_en : dateStr_zh;
+
+  // Build ordered profession list: primary first, then extras
+  const primaryProf = profOverride || user.profession || 'developer';
+  const extraProfs = profOverride ? [] : (user.extraProfessions || []);
+  const allProfs = [primaryProf, ...extraProfs];
+
+  if (i > 0) console.log('\n' + '═'.repeat(60) + '\n');
+
+  // Header when user has multiple subscriptions
+  if (allProfs.length > 1) {
+    if (lang === 'en') {
+      console.log(`╔══ ${user.userId} · ${allProfs.length} profession briefs · ${dateStr} ══╗\n`);
+    } else {
+      console.log(`╔══ ${user.userId} · 今日 ${allProfs.length} 个职业早报 · ${dateStr} ══╗\n`);
+    }
+  }
+
+  // One block per profession
+  allProfs.forEach((prof, j) => {
+    if (j > 0) console.log('\n' + '─'.repeat(60) + '\n');
+    const isExtra = j > 0;
+    console.log(professionBlock(user, prof, lang, region, dateStr, extraKeywords, isExtra));
+  });
+
+  // Tail hint when multiple professions
+  if (allProfs.length > 1) {
+    if (lang === 'en') {
+      console.log(`\n╚══ End of ${user.userId}'s ${allProfs.length} briefs. To manage subscriptions: node scripts/manage-professions.js --userId ${user.userId} --list ══╝`);
+    } else {
+      console.log(`\n╚══ ${user.userId} 的 ${allProfs.length} 份早报推送完毕。管理订阅：node scripts/manage-professions.js --userId ${user.userId} --list ══╝`);
+    }
   }
 });

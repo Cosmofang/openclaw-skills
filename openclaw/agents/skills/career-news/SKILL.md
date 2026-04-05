@@ -1,9 +1,9 @@
 ---
 name: Career News
 description: |
-  针对不同职业每日推送全球精选行业新闻。
-  来源覆盖 X（Twitter）、Google、Grok、全球主流媒体。
-  支持中英双语、多职业分类、关键词筛选、定时早推。
+  Daily profession-targeted news from X (Twitter), Google News, Grok, and global media.
+  Supports bilingual (zh/en), multi-profession subscriptions, keyword filters, and scheduled morning push.
+  Users can subscribe to news from multiple professions beyond their primary one.
 keywords:
   - news
   - career
@@ -13,6 +13,13 @@ keywords:
   - google
   - grok
   - industry
+  - multi-profession
+  - subscription
+  - morning-brief
+  - 职业新闻
+  - 早报
+  - 行业动态
+  - 多职业订阅
 metadata:
   openclaw:
     runtime:
@@ -21,12 +28,14 @@ metadata:
 
 # Career News
 
-为不同职业的用户，每天早上从 **X（Twitter）、Google News、Grok、全球媒体** 聚合最相关的行业动态，生成一份精简、有价值的职业新闻早报。
+Aggregates the most relevant industry news for professionals every morning from **X (Twitter), Google News, Grok, and global media**. Each user receives a concise, high-value brief tailored to their profession(s).
 
-## 支持职业
+Users can subscribe to news from **multiple professions** — a developer who also wants investor and marketing news gets three separate briefs every morning.
 
-| 职业 slug | 中文 | 英文 |
-|-----------|------|------|
+## Supported Professions
+
+| Slug | Chinese | English |
+|------|---------|---------|
 | `doctor` | 医生/医疗从业者 | Doctor / Healthcare |
 | `lawyer` | 律师/法律从业者 | Lawyer / Legal |
 | `engineer` | 工程师（泛） | Engineer |
@@ -42,58 +51,89 @@ metadata:
 | `hr` | 人力资源 | HR |
 | `sales` | 销售 | Sales |
 
-## 脚本说明
+## Scripts
 
-| 脚本 | 功能 |
-|------|------|
-| `scripts/morning-push.js` | 每日早 7:00 推送，遍历所有用户 |
-| `scripts/news-query.js` | 即时查询指定职业新闻 |
-| `scripts/register.js` | 注册/查看/列出用户 |
-| `scripts/push-toggle.js` | 开关推送 |
+| Script | Function |
+|--------|----------|
+| `scripts/morning-push.js` | Daily 7:00 AM push — generates one brief per profession per user |
+| `scripts/news-query.js` | Instant query for any profession (or all of a user's subscriptions) |
+| `scripts/register.js` | Register / view / list users |
+| `scripts/manage-professions.js` | Add / remove / list extra profession subscriptions |
+| `scripts/push-toggle.js` | Enable / disable push for a user |
 
-## 用法
+## Usage
 
 ```bash
-# 注册用户
+# Register a user
 node scripts/register.js alice --profession developer --lang zh
 node scripts/register.js bob --profession investor --lang en
 
-# 即时查询
+# Manage multi-profession subscriptions
+node scripts/manage-professions.js --userId alice --add investor
+node scripts/manage-professions.js --userId alice --add marketing
+node scripts/manage-professions.js --userId alice --list
+node scripts/manage-professions.js --userId alice --remove marketing
+node scripts/manage-professions.js --userId alice --clear        # remove all extras
+node scripts/manage-professions.js --suggest alice               # AI suggests new subscriptions
+
+# Instant query
 node scripts/news-query.js developer
 node scripts/news-query.js investor --lang en --region us
+node scripts/news-query.js --userId alice                        # query all of alice's professions
+node scripts/news-query.js --userId alice --all-professions
 
-# 手动触发推送
+# Trigger push manually
 node scripts/morning-push.js
 node scripts/morning-push.js --user alice
-node scripts/morning-push.js --profession doctor   # 覆盖职业
+node scripts/morning-push.js --profession doctor   # override profession
 
-# 开关推送
-node scripts/push-toggle.js --userId alice         # 切换状态
-node scripts/push-toggle.js                        # 显示 cron 命令
+# Toggle push
+node scripts/push-toggle.js --userId alice         # toggle on/off
+node scripts/push-toggle.js                        # show cron command
 ```
 
-## Cron 设置
+## Cron Setup
 
 ```bash
 openclaw cron add "0 7 * * *" "cd /path/to/career-news && node scripts/morning-push.js"
 ```
 
-## 新闻来源策略
+## Multi-Profession Subscription
 
-推送 prompt 要求 agent 按以下顺序检索：
+Each user has one **primary profession** and any number of **extra profession subscriptions**:
 
-1. **X (Twitter)** — 搜索职业相关关键词的最新高互动帖子
-2. **Google News** — 该职业领域过去 24 小时新闻
-3. **Grok** — 请求对当日行业动态的 AI 综合摘要
-4. **全球媒体** — Bloomberg、Reuters、TechCrunch、Nature 等按职业匹配
+- Morning push generates **one brief per profession**, primary first
+- `manage-professions.js --suggest` asks the AI to recommend complementary professions based on career overlaps, knowledge amplification, and adjacent fields
+- Extra subscriptions are preserved when re-registering
 
-## 用户数据格式
+Example — a developer who adds investor and marketing:
+```
+╔══ alice · 今日 3 个职业早报 · 2026年4月4日 ══╗
+[Career News | developer ✦ primary | ...]
+────────────────────────────────────────────────────────────
+[Career News | investor ★ extra subscription | ...]
+────────────────────────────────────────────────────────────
+[Career News | marketing ★ extra subscription | ...]
+╚══ End of alice's 3 briefs. ══╝
+```
+
+## News Source Strategy
+
+Push prompts instruct the agent to search in this order:
+
+1. **X (Twitter)** — latest high-engagement posts matching profession keywords
+2. **Google News** — past 24 hours in this profession's field
+3. **Grok** — AI-synthesized summary of today's top developments
+4. **Global media** — Bloomberg, Reuters, TechCrunch, Nature, etc. matched to profession
+
+## User Data Schema
 
 `data/users/<userId>.json`:
 ```json
 {
   "userId": "alice",
   "profession": "developer",
+  "extraProfessions": ["investor", "marketing"],
   "language": "zh",
   "region": "cn",
   "keywords": ["AI", "开源"],
@@ -102,3 +142,7 @@ openclaw cron add "0 7 * * *" "cd /path/to/career-news && node scripts/morning-p
   "updatedAt": "2026-04-04T00:00:00.000Z"
 }
 ```
+
+---
+
+*Version: 1.1.0 · Updated: 2026-04-04*

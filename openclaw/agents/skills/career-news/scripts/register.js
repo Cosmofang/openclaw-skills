@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 /**
  * career-news — register.js
- * 注册/查看/列出用户
+ * Register / view / list users. Supports one primary profession + multiple extra subscriptions.
  *
- * 用法:
+ * Usage:
  *   node scripts/register.js <userId> --profession <prof> [--lang zh|en] [--region cn|us|global] [--keywords kw1,kw2]
  *   node scripts/register.js --show <userId>
  *   node scripts/register.js --list
  *
- * 支持职业: doctor, lawyer, engineer, developer, designer, product-manager,
- *           investor, teacher, journalist, entrepreneur, researcher, marketing, hr, sales
+ * Professions: doctor, lawyer, engineer, developer, designer, product-manager,
+ *              investor, teacher, journalist, entrepreneur, researcher, marketing, hr, sales
+ *
+ * Note: to add/remove extra profession subscriptions use manage-professions.js
  */
 
 const fs = require('fs');
@@ -33,6 +35,16 @@ const PROFESSION_ZH_MAP = {
   '人力资源':'hr','销售':'sales'
 };
 
+function resolveProf(raw) {
+  if (!raw) return null;
+  const direct = PROFESSION_ZH_MAP[raw] || (VALID_PROFESSIONS.has(raw) ? raw : null);
+  if (direct) return direct;
+  for (const [key, val] of Object.entries(PROFESSION_ZH_MAP)) {
+    if (raw.includes(key)) return val;
+  }
+  return null;
+}
+
 const args = process.argv.slice(2);
 
 // --list
@@ -41,14 +53,15 @@ if (args.includes('--list')) {
   const files = fs.readdirSync(USERS_DIR).filter(f => f.endsWith('.json'));
   if (files.length === 0) { console.log('No users registered.'); process.exit(0); }
   console.log(`\nRegistered users (${files.length}):`);
-  console.log('─'.repeat(60));
+  console.log('─'.repeat(70));
   files.forEach(f => {
     const u = JSON.parse(fs.readFileSync(path.join(USERS_DIR, f), 'utf8'));
+    const allProfs = [u.profession, ...(u.extraProfessions || [])].filter(Boolean);
     const kw = u.keywords && u.keywords.length ? ` [${u.keywords.join(',')}]` : '';
     const push = u.pushEnabled === false ? '⏸' : '✅';
-    console.log(`${push} ${u.userId.padEnd(20)} ${u.profession.padEnd(18)} ${u.language}/${u.region}${kw}`);
+    console.log(`${push} ${u.userId.padEnd(20)} ${allProfs.join('+').padEnd(28)} ${u.language}/${u.region}${kw}`);
   });
-  console.log('─'.repeat(60));
+  console.log('─'.repeat(70));
   process.exit(0);
 }
 
@@ -60,19 +73,22 @@ if (showIdx !== -1) {
   const fp = path.join(USERS_DIR, `${showId.replace(/[^a-zA-Z0-9_-]/g, '')}.json`);
   if (!fs.existsSync(fp)) { console.error(`User "${showId}" not found.`); process.exit(1); }
   const u = JSON.parse(fs.readFileSync(fp, 'utf8'));
+  const allProfs = [u.profession, ...(u.extraProfessions || [])].filter(Boolean);
   console.log(JSON.stringify(u, null, 2));
+  console.log(`\nSubscribed professions (${allProfs.length}): ${allProfs.join(', ')}`);
+  console.log('Tip: node scripts/manage-professions.js --userId ' + u.userId + ' --add <profession>');
   process.exit(0);
 }
 
 // register
-const profIdx = args.indexOf('--profession');
-const langIdx = args.indexOf('--lang');
-const regionIdx = args.indexOf('--region');
-const kwIdx = args.indexOf('--keywords');
-const profArg = profIdx !== -1 ? args[profIdx + 1] : null;
-const langArg = langIdx !== -1 ? args[langIdx + 1] : 'zh';
-const regionArg = regionIdx !== -1 ? args[regionIdx + 1] : null;
-const kwArg = kwIdx !== -1 ? args[kwIdx + 1] : null;
+const profIdx     = args.indexOf('--profession');
+const langIdx     = args.indexOf('--lang');
+const regionIdx   = args.indexOf('--region');
+const kwIdx       = args.indexOf('--keywords');
+const profArg     = profIdx   !== -1 ? args[profIdx   + 1] : null;
+const langArg     = langIdx   !== -1 ? args[langIdx   + 1] : 'zh';
+const regionArg   = regionIdx !== -1 ? args[regionIdx + 1] : null;
+const kwArg       = kwIdx     !== -1 ? args[kwIdx     + 1] : null;
 
 const rawUserId = args.filter(a =>
   !a.startsWith('--') &&
@@ -86,24 +102,16 @@ if (!rawUserId) {
   console.error('');
   console.error('Professions: doctor, lawyer, engineer, developer, designer, product-manager,');
   console.error('             investor, teacher, journalist, entrepreneur, researcher, marketing, hr, sales');
+  console.error('');
+  console.error('To manage extra profession subscriptions:');
+  console.error('  node scripts/manage-professions.js --userId <id> --add <profession>');
   process.exit(1);
 }
 
 const userId = rawUserId.replace(/[^a-zA-Z0-9_-]/g, '').substring(0, 64);
 if (!userId) { console.error('Invalid userId.'); process.exit(1); }
 
-// Resolve profession
-let profession = null;
-if (profArg) {
-  profession = PROFESSION_ZH_MAP[profArg] || (VALID_PROFESSIONS.has(profArg) ? profArg : null);
-  if (!profession) {
-    for (const [key, val] of Object.entries(PROFESSION_ZH_MAP)) {
-      if (profArg.includes(key)) { profession = val; break; }
-    }
-  }
-}
-if (!profession) profession = 'developer';
-
+const profession = resolveProf(profArg) || 'developer';
 const lang = langArg === 'en' ? 'en' : 'zh';
 const region = regionArg || (lang === 'zh' ? 'cn' : 'us');
 const keywords = kwArg ? kwArg.split(',').map(k => k.trim()).filter(Boolean) : [];
@@ -115,6 +123,7 @@ const user = {
   ...existing,
   userId,
   profession,
+  extraProfessions: existing.extraProfessions || [],   // preserved on re-register
   language: lang,
   region,
   keywords,
@@ -124,9 +133,15 @@ const user = {
 };
 
 fs.writeFileSync(fp, JSON.stringify(user, null, 2));
+const allProfs = [user.profession, ...user.extraProfessions].filter(Boolean);
 console.log(`✔ User "${userId}" registered.`);
-console.log(`  Profession : ${profession}`);
-console.log(`  Language   : ${lang} / Region: ${region}`);
-if (keywords.length) console.log(`  Keywords   : ${keywords.join(', ')}`);
-console.log(`  Push       : ${user.pushEnabled ? 'enabled' : 'disabled'}`);
-console.log(`  Saved to   : ${fp}`);
+console.log(`  Primary profession : ${profession}`);
+console.log(`  Extra subscriptions: ${user.extraProfessions.length ? user.extraProfessions.join(', ') : '(none)'}`);
+console.log(`  All professions    : ${allProfs.join(', ')}`);
+console.log(`  Language           : ${lang} / Region: ${region}`);
+if (keywords.length) console.log(`  Keywords           : ${keywords.join(', ')}`);
+console.log(`  Push               : ${user.pushEnabled ? 'enabled' : 'disabled'}`);
+console.log(`  Saved to           : ${fp}`);
+console.log('');
+console.log(`  → To add more profession subscriptions:`);
+console.log(`    node scripts/manage-professions.js --userId ${userId} --add <profession>`);

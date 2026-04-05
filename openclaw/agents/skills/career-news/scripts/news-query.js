@@ -1,18 +1,24 @@
 #!/usr/bin/env node
 /**
  * career-news — news-query.js
- * 即时查询指定职业的最新新闻
+ * Instant query for latest news by profession.
  *
- * 用法:
+ * Usage:
  *   node scripts/news-query.js <profession>
  *   node scripts/news-query.js developer
  *   node scripts/news-query.js investor --lang en --region us
  *   node scripts/news-query.js doctor --keywords "癌症研究,新药"
+ *   node scripts/news-query.js --userId <id>              # query all of user's subscribed professions
+ *   node scripts/news-query.js --userId <id> --all-professions
  *
- * 支持职业: doctor, lawyer, engineer, developer, designer,
+ * Professions: doctor, lawyer, engineer, developer, designer,
  *   product-manager, investor, teacher, journalist, entrepreneur,
  *   researcher, marketing, hr, sales
  */
+
+const fs = require('fs');
+const path = require('path');
+const USERS_DIR = path.join(__dirname, '..', 'data', 'users');
 
 const args = process.argv.slice(2);
 const langIdx = args.indexOf('--lang');
@@ -21,8 +27,11 @@ const regionIdx = args.indexOf('--region');
 const regionArg = regionIdx !== -1 ? args[regionIdx + 1] : null;
 const kwIdx = args.indexOf('--keywords');
 const kwArg = kwIdx !== -1 ? args[kwIdx + 1] : null;
+const userIdx = args.indexOf('--userId');
+const userIdArg = userIdx !== -1 ? args[userIdx + 1] : null;
+const allProfsFlag = args.includes('--all-professions');
 
-const rawProf = args.filter(a => !a.startsWith('--') && a !== langArg && a !== regionArg && a !== kwArg)[0] || '';
+const rawProf = args.filter(a => !a.startsWith('--') && a !== langArg && a !== regionArg && a !== kwArg && a !== userIdArg)[0] || '';
 
 const PROFESSION_ZH_MAP = {
   '医生': 'doctor', '医疗': 'doctor', '律师': 'lawyer', '法律': 'lawyer',
@@ -39,8 +48,47 @@ const VALID_PROFESSIONS = new Set([
   'investor','teacher','journalist','entrepreneur','researcher','marketing','hr','sales'
 ]);
 
-if (!rawProf) {
+// --userId mode: query all of user's subscribed professions
+if (userIdArg && (allProfsFlag || !rawProf)) {
+  const safeId = userIdArg.replace(/[^a-zA-Z0-9_-]/g, '');
+  const fp = path.join(USERS_DIR, `${safeId}.json`);
+  if (!fs.existsSync(fp)) {
+    console.error(`User "${userIdArg}" not found.`);
+    process.exit(1);
+  }
+  const u = JSON.parse(fs.readFileSync(fp, 'utf8'));
+  const userLang = langArg === 'en' ? 'en' : (u.language || 'zh');
+  const userRegion = regionArg || u.region || (userLang === 'zh' ? 'cn' : 'us');
+  const userKw = kwArg ? kwArg.split(',').map(k => k.trim()) : (u.keywords || []);
+  const allProfs = [u.profession, ...(u.extraProfessions || [])].filter(Boolean);
+  const now2 = new Date();
+  const ds = userLang === 'en'
+    ? now2.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+    : `${now2.getFullYear()}年${now2.getMonth()+1}月${now2.getDate()}日`;
+
+  if (userLang === 'en') {
+    console.log(`Querying all ${allProfs.length} profession(s) for ${u.userId}: ${allProfs.join(', ')}\n`);
+  } else {
+    console.log(`为 ${u.userId} 查询全部 ${allProfs.length} 个订阅职业：${allProfs.join('、')}\n`);
+  }
+
+  allProfs.forEach((prof, idx) => {
+    // Inline PROFESSION_CONFIG lookup will be done in the block below via re-invocation hint
+    if (idx > 0) console.log('\n' + '─'.repeat(60) + '\n');
+    const isExtra = idx > 0;
+    const profLabel = userLang === 'en' ? `${prof}${isExtra ? ' ★ extra' : ' ✦ primary'}` : `${prof}${isExtra ? ' ★ 额外订阅' : ' ✦ 主职业'}`;
+    if (userLang === 'en') {
+      console.log(`[Career News Query | user: ${u.userId} | profession: ${profLabel} | lang: en | region: ${userRegion.toUpperCase()} | ${ds}]\n→ Run: node scripts/news-query.js ${prof} --lang en --region ${userRegion}${userKw.length ? ' --keywords "' + userKw.join(',') + '"' : ''}`);
+    } else {
+      console.log(`[职业新闻即时查询 | 用户：${u.userId} | 职业：${profLabel} | 语言：zh | 地区：${userRegion.toUpperCase()} | ${ds}]\n→ 执行：node scripts/news-query.js ${prof} --region ${userRegion}${userKw.length ? ' --keywords "' + userKw.join(',') + '"' : ''}`);
+    }
+  });
+  process.exit(0);
+}
+
+if (!rawProf && !userIdArg) {
   console.error('Usage: node scripts/news-query.js <profession> [--lang zh|en] [--region cn|us|global] [--keywords "kw1,kw2"]');
+  console.error('       node scripts/news-query.js --userId <id>   # query all subscribed professions');
   console.error('');
   console.error('Professions: doctor, lawyer, engineer, developer, designer, product-manager,');
   console.error('             investor, teacher, journalist, entrepreneur, researcher, marketing, hr, sales');
