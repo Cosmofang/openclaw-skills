@@ -437,4 +437,4 @@ export SKILL_OUTPUT_DIR=~/.openclaw/workspace/skills  # optional
 
 ---
 
-*Version: 1.4.0 · Created: 2026-04-04 · Updated: 2026-04-09*
+*Version: 1.4.1 · Created: 2026-04-04 · Updated: 2026-04-09*
