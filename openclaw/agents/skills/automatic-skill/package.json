@@ -1,10 +1,10 @@
 {
   "name": "automatic-skill",
-  "version": "1.0.0",
-  "description": "Automatic Skill — 每日自动调研、设计、制作、测试并发布新 Skill 的元技能流水线",
+  "version": "1.2.0",
+  "description": "每日 Skill 自动工厂 — 10阶段流水线自主调研、设计、生成、测试并发布新 skill，支持已有 skill 迭代升级",
   "keywords": [
-    "automatic", "skill-factory", "pipeline", "meta-skill", "daily-skill",
-    "自动skill", "技能工厂", "每日skill", "自动化"
+    "automatic-skill", "skill-factory", "pipeline", "meta-skill", "daily-skill",
+    "自动skill", "技能工厂", "每日skill", "自动化", "skill迭代", "clawhub-publish"
   ],
   "author": "jiajiaoy",
   "license": "MIT",
