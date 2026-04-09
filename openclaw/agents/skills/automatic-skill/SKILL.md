@@ -279,6 +279,7 @@ node scripts/push-toggle.js on
 | 5 | Review | `review.js <skill-dir>` | Quality checklist: structure, scripts, content, security |
 | 6 | Self-Run | `self-run.js <skill-dir>` | Execute every script, verify zero errors |
 | 7 | Self-Check | `self-check.js <skill-dir>` | Validate required fields, file tree, script signatures |
+| 7.5 | Safety Check | `scan-check.js <skill-dir>` | Pre-upload credential-safety gate; blocks upload if issues found |
 | 8 | Upload | `upload.js <skill-dir>` | Create standalone repo + push monorepo; clawhub publish |
 | 9 | Verify | `verify-upload.js <skill-name>` | Confirm live on GitHub and clawHub |
 | 10 | Final Review | `final-review.js <skill-name>` | Full report, write to pipeline-log.json |
@@ -436,4 +437,4 @@ export SKILL_OUTPUT_DIR=~/.openclaw/workspace/skills  # optional
 
 ---
 
-*Version: 1.3.3 · Created: 2026-04-04 · Updated: 2026-04-09*
+*Version: 1.4.0 · Created: 2026-04-04 · Updated: 2026-04-09*
