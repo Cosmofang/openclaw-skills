@@ -234,27 +234,28 @@ Extract and write down the five layers:
 4. **Expression system** — how titles and openings work, including any brand symbol
 5. **Transferability** — what another account can actually learn
 
-### 6) Produce the right deliverable
+### 6) Produce the deliverables
 
-See the Deliverables section below.
+Always output the three standard DOCX files directly — no intermediate Markdown step needed:
 
-### 7) Word output (when requested)
+| Output file | When to produce |
+|-------------|----------------|
+| `账号名-结构化总结报告.docx` | Single creator analysis |
+| `账号名-爆款选题公式.docx` | Single creator topic formula |
+| `选题公式学习-综合版.docx` | Multi-creator comparison |
 
-- Generate Markdown first
-- Use `scripts/docx-plan.js` to print the build_docx usage plan
-- Run the recommended Python script to generate `.docx`
-- Use `inspect_docx.py` if TOC or bookmark issues appear
-- See `references/workflow.md` for the Word TOC fix checklist
+Use `scripts/docx-plan.js <creator-name>` to get the exact build command.
+See `references/workflow.md` for the Word TOC fix checklist if needed.
 
 ---
 
 ## Deliverables
 
-### A. Structured Account Report
+Three standard output files. Always produce as `.docx` directly.
 
-Best for: complete benchmark breakdown.
+### 账号名-结构化总结报告.docx
 
-Sections:
+Single creator full breakdown. Sections:
 1. Account snapshot
 2. Archetype classification + rationale
 3. Strategic positioning
@@ -267,11 +268,9 @@ Sections:
 10. What not to blindly copy
 11. Conclusion
 
-### B. Viral Topic Formula
+### 账号名-爆款选题公式.docx
 
-Best for: "做爆款选题公式 / what is the reusable formula?"
-
-Sections:
+Single creator topic formula. Sections:
 1. Why this creator produces strong topics (archetype-based)
 2. Total formula
 3. 3–6 recurring topic models
@@ -279,66 +278,41 @@ Sections:
 5. Body structure formulas
 6. Distribution / comment triggers
 7. How to migrate to another account
-8. 10–30 topic directions
+8. 10–30 ready-to-use topic directions
 
-### C. Comparison Report (2–3+ accounts)
+### 选题公式学习-综合版.docx
 
-Best for: benchmark creators merged into one learning system.
-
-Sections:
+Multi-creator comparison. Sections:
 1. Why compare these creators together
-2. Shared foundations
-3. Key differences (archetype map)
+2. Archetype map
+3. Shared foundations + key differences
 4. Hybrid formula
-5. Which path fits which account type
-6. Suggested topic directions
+5. Which path fits which use case
+6. 30 combined topic directions
 7. Final recommendation
 
-### D. Customized Learning Report
+---
 
-Best for: "how should *my* account learn from this?"
+## Word Output
 
-Translate creator insight into:
-- Content direction choices (based on archetype match)
-- Title system choices
-- Tone / persona choices
-- A first batch of 10–30 topic directions
+Run `node scripts/docx-plan.js <creator-name>` to get the exact build command.
+
+Standard build: `python3 build_docx6.py <creator-name>`
+
+If TOC / bookmark issues appear: run `inspect_docx.py` then `fix_final2.py`.
+See `references/workflow.md` for the full fix checklist.
 
 ---
 
-## Word / Business Deliverables
+## Output Files
 
-When the user wants Word output:
+Three files, always `.docx`:
 
-1. Generate Markdown first
-2. Run `node scripts/docx-plan.js <creator-name>` to see which Python script to use
-3. Execute the recommended `build_docx*.py` from the workflow archive
-4. If TOC / bookmark issues appear, run `inspect_docx.py` then `fix_final2.py`
-
-Best-practice Word layout:
-- Cover page
-- Clickable TOC (using `_TocH1_XXX` bookmarks — NOT external links)
-- Page numbers
-- Conclusion page
-- Restrained typography
-
-Do **not** claim interactive TOC if the generated file does not contain real Word TOC fields or `_TocH1_XXX` anchors.
-
----
-
-## Deliverable Naming Conventions
-
-Recommended Chinese filenames:
-
-- `账号名-结构化总结报告.md`
 - `账号名-结构化总结报告.docx`
-- `账号名-结构化总结报告-商业版.docx`
-- `账号名-爆款选题公式.md`
 - `账号名-爆款选题公式.docx`
-- `A vs B-对比拆解.md`
-- `选题公式学习-综合版.md`
+- `选题公式学习-综合版.docx` (comparison / multi-creator)
 
-Use `scripts/report-plan.js` to print a deliverable plan and filenames.
+Use `scripts/report-plan.js <creator-name>` to confirm filenames.
 
 ---
 
@@ -410,4 +384,4 @@ These archetypes are the ground truth for the classification system.
 
 ---
 
-*Version: 2.0.0 · Created: 2026-04-08 · Updated: 2026-04-09*
+*Version: 2.1.0 · Created: 2026-04-08 · Updated: 2026-04-09*

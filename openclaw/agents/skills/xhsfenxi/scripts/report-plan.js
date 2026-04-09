@@ -29,9 +29,6 @@ if (mode === 'compare') {
   }
   const [a, b] = names;
   const files = [
-    `${a} vs ${b}-对比拆解.md`,
-    `${a} vs ${b}-对比拆解.docx`,
-    `选题公式学习-综合版.md`,
     `选题公式学习-综合版.docx`
   ];
   console.log(`
@@ -53,10 +50,7 @@ ${files.map(f => `- ${f}`).join('\n')}
 
 const name = names[0];
 const files = [
-  `${name}-结构化总结报告.md`,
   `${name}-结构化总结报告.docx`,
-  `${name}-结构化总结报告-商业版.docx`,
-  `${name}-爆款选题公式.md`,
   `${name}-爆款选题公式.docx`
 ];
 

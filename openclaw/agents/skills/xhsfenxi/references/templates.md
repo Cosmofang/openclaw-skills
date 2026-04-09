@@ -2,27 +2,15 @@
 
 ---
 
-## File Naming Patterns
+## Output Files
 
-### Single creator
+Always produce as `.docx` directly. Three standard files:
 
-- `账号名-结构化总结报告.md`
-- `账号名-结构化总结报告.docx`
-- `账号名-结构化总结报告-商业版.docx`
-- `账号名-爆款选题公式.md`
-- `账号名-爆款选题公式.docx`
-
-### Comparison
-
-- `A vs B-对比拆解.md`
-- `A vs B-对比拆解.docx`
-- `选题公式学习-综合版.md`
-- `选题公式学习-综合版.docx`
-
-### GPT / AI-assisted versions
-
-- `GPT-账号名-结构化总结报告.md`
-- `GPT-账号名-爆款选题公式.md`
+| File | When |
+|------|------|
+| `账号名-结构化总结报告.docx` | Single creator analysis |
+| `账号名-爆款选题公式.docx` | Single creator topic formula |
+| `选题公式学习-综合版.docx` | Multi-creator comparison |
 
 ---
 
