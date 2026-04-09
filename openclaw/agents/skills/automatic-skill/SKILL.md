@@ -212,9 +212,24 @@ node scripts/push-toggle.js on
 | 5 | Review | `review.js <skill-dir>` | Quality checklist: structure, scripts, content, security |
 | 6 | Self-Run | `self-run.js <skill-dir>` | Execute every script, verify zero errors |
 | 7 | Self-Check | `self-check.js <skill-dir>` | Validate required fields, file tree, script signatures |
-| 8 | Upload | `upload.js <skill-dir>` | git commit → push GitHub; clawhub publish |
+| 8 | Upload | `upload.js <skill-dir>` | Create standalone repo + push monorepo; clawhub publish |
 | 9 | Verify | `verify-upload.js <skill-name>` | Confirm live on GitHub and clawHub |
 | 10 | Final Review | `final-review.js <skill-name>` | Full report, write to pipeline-log.json |
+
+---
+
+## 📦 Publishing Convention
+
+Every skill uploaded by automatic-skill **must** have both:
+
+| Destination | Purpose | Command |
+|-------------|---------|---------|
+| `<owner>/<slug>` (standalone repo) | Users can search and find the skill directly on GitHub | `gh repo create <owner>/<slug> --public` → push skill files |
+| `GITHUB_REPO/openclaw/agents/skills/<slug>/` (monorepo) | Registry index — all skills listed in one place | `git add openclaw/agents/skills/<slug>/` → push |
+
+**Stage 8 always runs standalone repo creation first, then monorepo push.**
+
+If the standalone repo already exists, skip creation and force-push the latest files.
 
 ---
 
@@ -302,10 +317,11 @@ scripts/
 3. **GitHub operations use the `gh` CLI** (inspired by [steipete/github](https://clawhub.ai/steipete/github)): `gh auth status`, `gh repo view`, `gh api`, `gh pr create`. Install with `brew install gh` and run `gh auth login` before first use.
 4. Stage 8 supports `--pr` flag for a PR-based GitHub workflow instead of direct push to main.
 5. Stage 9 verifies GitHub state live via `gh api repos/{repo}/contents/{path}` — no `git fetch` needed.
-6. On any stage failure the pipeline stops and logs the error — no partial overwrites
-7. `--dry-run` stops after self-check, no network operations
-8. Full run history in `data/pipeline-log.json`
-9. All scripts are prompt generators only — no outbound network requests are made by the scripts themselves
+6. **Every skill gets a standalone GitHub repo** (`<owner>/<slug>`) in addition to the monorepo entry — this lets users search and discover skills directly on GitHub
+7. On any stage failure the pipeline stops and logs the error — no partial overwrites
+8. `--dry-run` stops after self-check, no network operations
+9. Full run history in `data/pipeline-log.json`
+10. All scripts are prompt generators only — no outbound network requests are made by the scripts themselves
 
 ---
 
@@ -337,4 +353,4 @@ export SKILL_OUTPUT_DIR=~/.openclaw/workspace/skills  # optional
 
 ---
 
-*Version: 1.2.0 · Created: 2026-04-04 · Updated: 2026-04-09*
+*Version: 1.3.0 · Created: 2026-04-04 · Updated: 2026-04-09*
