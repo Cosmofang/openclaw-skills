@@ -1,7 +1,8 @@
 {
   "name": "automatic-skill",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "每日 Skill 自动工厂 — 10阶段流水线自主调研、设计、生成、测试并发布新 skill，支持已有 skill 迭代升级",
+  "homepage": "https://github.com/Cosmofang/automatic-skill",
   "keywords": [
     "automatic-skill", "skill-factory", "pipeline", "meta-skill", "daily-skill",
     "自动skill", "技能工厂", "每日skill", "自动化", "skill迭代", "clawhub-publish"

@@ -73,32 +73,63 @@ requirements:
       description: "Notification channel for pipeline failure alerts (e.g. slack://...)."
 metadata:
   openclaw:
+    homepage: "https://github.com/Cosmofang/automatic-skill"
+    author: "Cosmofang"
     runtime:
       node: ">=18"
+    permissions:
+      - "Reads and writes files in SKILL_OUTPUT_DIR"
+      - "Creates GitHub repositories via gh CLI using GITHUB_TOKEN"
+      - "Pushes commits to GITHUB_REPO via gh CLI"
+      - "Publishes skills to clawHub using CLAWHUB_TOKEN"
+      - "Registers cron jobs via openclaw cron (when push-toggle is enabled)"
     env:
       - name: GITHUB_TOKEN
         required: true
-        description: "GitHub personal access token with repo write permission."
+        description: "GitHub personal access token — must have 'repo' scope. Scoped to your own repos only. Used by gh CLI to create repos and push commits."
       - name: GITHUB_REPO
         required: true
-        description: "Target repo in owner/repo format, e.g. zezedabaobei/openclaw-skills"
+        description: "Target monorepo in owner/repo format, e.g. yourname/openclaw-skills. Must be a repo you own."
       - name: CLAWHUB_TOKEN
         required: true
-        description: "ClawHub API token for publishing skills."
+        description: "ClawHub API token. Used only to publish skills under your own clawHub account."
       - name: CLAWHUB_OWNER_ID
         required: false
-        description: "ClawHub ownerId (defaults to kn79bebfnwg15sb0g7cj5z5nyd83gxh0)."
+        description: "Your clawHub ownerId. If omitted, defaults to the account associated with CLAWHUB_TOKEN."
       - name: SKILL_OUTPUT_DIR
         required: false
         description: "Where generated skills are written. Defaults to ~/.openclaw/workspace/skills."
       - name: OPENCLAW_NOTIFY_CHANNEL
         required: false
-        description: "Notification channel for pipeline failure alerts."
+        description: "Notification channel for pipeline failure alerts (e.g. slack://...)."
 ---
 
 # Automatic Skill — 每日 Skill 自动工厂
 
-> 每天凌晨自动调研 → 设计 → 制作 → 审核 → 自测 → 发布 → 复查，全程无需人工介入
+> 每天凌晨自动调研 → 设计 → 制作 → 审核 → 自测 → 发布 → 复查，全程无需人工介入（发布阶段使用你自己的 GitHub/clawHub 凭证）
+
+---
+
+## ⚠️ Security & Permissions
+
+**This skill takes real, irreversible actions on your accounts.** Before installing, understand exactly what it does:
+
+| Action | Credential used | Scope |
+|--------|----------------|-------|
+| Creates GitHub repositories | `GITHUB_TOKEN` | Under your GitHub account (`gh repo create`) |
+| Pushes commits + files | `GITHUB_TOKEN` | To `GITHUB_REPO` you specify |
+| Publishes skills to clawHub | `CLAWHUB_TOKEN` | Under your clawHub account |
+| Writes files to disk | — | `SKILL_OUTPUT_DIR` (default `~/.openclaw/workspace/skills`) |
+| Registers daily cron job | — | Local machine only, via `openclaw cron` |
+
+**What it does NOT do:**
+- It does not exfiltrate credentials or send them anywhere
+- All scripts are prompt generators — network operations happen only via `gh` CLI and `clawhub` CLI using your tokens
+- `--dry-run` mode executes zero network operations (safe for testing)
+
+**Token scoping recommendations:**
+- `GITHUB_TOKEN`: use a fine-grained PAT scoped to a single repo, with **Contents: Read & write** only
+- `CLAWHUB_TOKEN`: your personal publishing token — keep it in your shell env, not in any committed file
 
 ---
 
@@ -353,4 +384,4 @@ export SKILL_OUTPUT_DIR=~/.openclaw/workspace/skills  # optional
 
 ---
 
-*Version: 1.3.0 · Created: 2026-04-04 · Updated: 2026-04-09*
+*Version: 1.3.1 · Created: 2026-04-04 · Updated: 2026-04-09*
