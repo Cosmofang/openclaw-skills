@@ -110,26 +110,28 @@ metadata:
 
 ---
 
-## ⚠️ Security & Permissions
+## ⚠️ Credentials
 
-**This skill takes real, irreversible actions on your accounts.** Before installing, understand exactly what it does:
+**Stages 1–7 use zero credentials.** Only Stage 8 (Upload) and beyond touch your accounts.
 
-| Action | Credential used | Scope |
-|--------|----------------|-------|
-| Creates GitHub repositories | `GITHUB_TOKEN` | Under your GitHub account (`gh repo create`) |
-| Pushes commits + files | `GITHUB_TOKEN` | To `GITHUB_REPO` you specify |
-| Publishes skills to clawHub | `CLAWHUB_TOKEN` | Under your clawHub account |
-| Writes files to disk | — | `SKILL_OUTPUT_DIR` (default `~/.openclaw/workspace/skills`) |
-| Registers daily cron job | — | Local machine only, via `openclaw cron` |
+| Stage | Action | Credential | What gets written |
+|-------|--------|-----------|-------------------|
+| 1–7 | Research, Design, SEO, Create, Review, Self-Run, Self-Check | None | Local files only |
+| 8a | `gh repo create <owner>/<slug> --public` | `GITHUB_TOKEN` | New public repo on your GitHub account |
+| 8b | `git push` to `GITHUB_REPO` | `GITHUB_TOKEN` | New commits to the monorepo you set |
+| 8c | `clawhub publish` | `CLAWHUB_TOKEN` | Skill listed publicly under your clawHub account |
+| 9–10 | Verify, Final Review | `GITHUB_TOKEN` (read-only `gh api`) | Nothing — read-only checks |
+| Cron | Daily auto-run (`push-toggle on`) | None | Registers a local cron job via `openclaw cron` |
 
-**What it does NOT do:**
-- It does not exfiltrate credentials or send them anywhere
-- All scripts are prompt generators — network operations happen only via `gh` CLI and `clawhub` CLI using your tokens
-- `--dry-run` mode executes zero network operations (safe for testing)
+**Does NOT:**
+- Read, transmit, or log credentials
+- Access repos or accounts other than the ones you configure
+- Execute network operations from scripts — all network actions go through `gh` CLI and `clawhub` CLI under your control
+- Run Stage 8 in `--dry-run` mode (safe for testing entire pipeline without publishing)
 
-**Token scoping recommendations:**
-- `GITHUB_TOKEN`: use a fine-grained PAT scoped to a single repo, with **Contents: Read & write** only
-- `CLAWHUB_TOKEN`: your personal publishing token — keep it in your shell env, not in any committed file
+**Minimum token scopes:**
+- `GITHUB_TOKEN`: fine-grained PAT → single repo → **Contents: Read & write** only
+- `CLAWHUB_TOKEN`: keep in shell env (`~/.zshrc`), never commit to any file
 
 ---
 
@@ -137,33 +139,67 @@ metadata:
 
 automatic-skill 是一个**元技能（meta-skill）**，它的能力是制造其他 skill。
 
-**核心能力：**
-- 自主完成从"想法"到"上线"的全部工作：调研 → 设计 → SEO优化 → 生成文件 → 代码审查 → 自测 → 自检 → 上传 GitHub → 发布 clawHub → 验证 → 复查
-- 每日凌晨 02:00 自动选题并跑完整个流水线，无需人工干预
-- 也可手动指定 idea 触发，或单独跑某一阶段调试
-- 支持 `--dry-run` 模式：走完自检但不执行任何上传操作
+**架构说明（重要）：** 每个阶段脚本是"prompt generator" — 脚本本身不执行任何业务逻辑，只输出结构化 prompt。真正的执行者是 agent（Claude）。网络操作（GitHub push、clawHub publish）均由 agent 调用 `gh` CLI 和 `clawhub` CLI 完成，凭证完全在你的机器上。
 
-**能力边界：**
-- 生成的是"prompt generator"型脚本，每个阶段脚本输出结构化 prompt，由 agent（Claude）执行
-- 脚本本身不发起任何网络请求，所有上传操作通过 `gh` CLI 和 `clawhub` CLI 完成
-- 每次运行只生成一个 skill；不支持批量并发生成
+**核心能力：**
+
+| 能力 | 说明 |
+|------|------|
+| 全流水线生成 | 从"想法"到"上线"：Research → Design → SEO → Create → Review → Self-Run → Self-Check → Upload → Verify → Final Review |
+| 每日自动选题 | 凌晨 02:00 cron 自动触发，选最高价值 idea，跑完整流程 |
+| 手动触发 | 指定 `--idea` 手动选题，或单独跑某一阶段调试 |
+| dry-run 模式 | `--dry-run`：执行到 Stage 7 自检后停止，**不发起任何网络操作** |
+| 已有 skill 迭代 | 对现有 skill 单独跑 SEO / self-check / upload 阶段进行升级 |
+
+**能力边界（不做的事）：**
+- 不直接写 skill 源码（源码由 agent 根据 create 阶段 prompt 生成）
+- 不并发生成多个 skill（每次运行产出一个）
+- 不访问或修改除 `GITHUB_REPO` 和 `SKILL_OUTPUT_DIR` 以外的任何路径或账号
 
 ---
 
 ## Instruction Scope
 
-**在 scope 内（会处理的请求）：**
+**在 scope 内（会处理）：**
 - "帮我自动生成一个 skill" / "skill 流水线跑了没" / "今天出了什么新 skill"
-- 手动触发全流水线或某一阶段重跑（如"重跑 SEO 阶段"）
-- 查看流水线状态和历史日志
-- 开关每日定时任务（cron on/off）
-- 用 automatic-skill 迭代已有 skill（运行各阶段脚本对现有 skill 进行升级/SEO/自检/上传）
+- 手动触发全流水线或单阶段重跑（如"重跑 SEO 阶段"）
+- 查看流水线状态和历史日志（`status.js`）
+- 开关每日定时任务（`push-toggle on/off`）
+- 用 automatic-skill 迭代已有 skill（对现有 skill 升级 / SEO 优化 / 自检 / 上传）
 
-**不在 scope 内（不处理的请求）：**
-- 直接编写 skill 源码（那是 create 阶段的 agent 工作）
-- 管理 GitHub 仓库权限或 clawHub 账户设置
-- 生成非 skill 格式的内容（如普通项目、应用代码）
-- 在没有配置 `GITHUB_TOKEN` / `GITHUB_REPO` / `CLAWHUB_TOKEN` 的情况下执行上传阶段
+**不在 scope 内（不处理）：**
+- 直接编写 skill 源码（源码由 agent 执行 create 阶段 prompt 生成，非 automatic-skill 职责）
+- 管理 GitHub 仓库权限、clawHub 账户设置、或任何账户级操作
+- 生成非 openclaw skill 格式的内容（普通项目、应用代码等）
+- 在未设置 `GITHUB_TOKEN` / `GITHUB_REPO` / `CLAWHUB_TOKEN` 的环境中执行 Stage 8（会提示缺少凭证，不会静默失败）
+
+**凭证缺失时的行为：**
+- Stages 1–7：无需凭证，正常运行
+- Stage 8 upload：缺少任意必需凭证 → 打印具体缺失变量名 + 配置指引，停止执行（不静默失败）
+- `--dry-run`：完整跳过 Stage 8，可安全在无凭证环境测试前七个阶段
+
+---
+
+## Persistence & Privilege
+
+**持久化写入的内容：**
+
+| 路径 | 内容 | 触发条件 |
+|------|------|---------|
+| `SKILL_OUTPUT_DIR/<slug>/` | 生成的 skill 文件 | Stage 4 Create |
+| `data/current-pipeline.json` | 当前流水线运行状态（临时） | 每次流水线运行 |
+| `data/pipeline-log.json` | 历次运行历史（追加写入） | Stage 10 Final Review |
+| `~/.openclaw/crontab`（或系统 cron） | 每日定时任务条目 | `push-toggle on` 时写入，`off` 时删除 |
+
+**不写入的路径：**
+- 不修改 shell 配置文件（`~/.zshrc` 等）
+- 不写入 `GITHUB_TOKEN` / `CLAWHUB_TOKEN` 等凭证到任何文件
+- 不在 `SKILL_OUTPUT_DIR` 之外创建文件（除 `data/` 目录）
+
+**权限级别：**
+- 运行时以当前用户身份执行，不需要 sudo 或提权
+- gh CLI 和 clawhub CLI 的权限上限由你配置的 token 范围决定
+- 如需撤销所有权限：`push-toggle off`（删除 cron）+ 在 GitHub/clawHub 吊销对应 token
 
 ---
 
@@ -384,4 +420,4 @@ export SKILL_OUTPUT_DIR=~/.openclaw/workspace/skills  # optional
 
 ---
 
-*Version: 1.3.1 · Created: 2026-04-04 · Updated: 2026-04-09*
+*Version: 1.3.2 · Created: 2026-04-04 · Updated: 2026-04-09*
