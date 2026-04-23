@@ -1,0 +1,44 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "description": "可迭代博主类型注册表 — 随分析案例自动演化",
+    "last_updated": "2026-04-23",
+    "total_analyzed": 0
+  },
+  "archetypes": {
+    "A": {
+      "name": "荒诞美学型",
+      "desc": "用荒诞幽默包裹哲学内核，高质感视觉，品牌符号统一",
+      "formula": "荒诞场景 × 品牌符号 × 哲思轻量化 → 审美共鸣",
+      "title_signals": ["（劲爆）", "劲爆", "*", "·"],
+      "content_signals": ["哲", "美学", "荒诞", "飞", "高山", "宇宙", "奖励", "永恒"],
+      "commercial": "高端生活方式、旅行、摄影、轻奢品牌",
+      "difficulty": "高",
+      "examples": [],
+      "confirmed_by": 0
+    },
+    "B": {
+      "name": "共鸣命名型",
+      "desc": "把私人经历转化为普世命题，给模糊情绪命名",
+      "formula": "私人经历 → 命题化 → 给模糊状态命名 → 普世共鸣",
+      "title_signals": ["*", "为什么", "是什么", "原来", "才知道", "命题", "灯塔", "解药"],
+      "content_signals": ["成长", "情绪", "留学", "记录", "年末", "不确定", "命题", "感受", "理解", "接纳"],
+      "commercial": "成长/教育/创意平台、中端生活方式",
+      "difficulty": "中",
+      "examples": ["xixiCharon"],
+      "confirmed_by": 1
+    },
+    "C": {
+      "name": "现实策略型",
+      "desc": "打破职场/人际/金钱潜规则，提供可执行的向上策略",
+      "formula": "困境 → 说破规则 → 提供策略 → 爽感执行",
+      "title_signals": ["骗子", "不要脸", "装", "穷", "规则", "策略", "大法"],
+      "content_signals": ["策略", "规则", "执行", "调整", "快速", "现实", "向上", "方法"],
+      "commercial": "大众消费、职场、电商、实用工具",
+      "difficulty": "中",
+      "examples": [],
+      "confirmed_by": 0
+    }
+  },
+  "custom_archetypes": {}
+}

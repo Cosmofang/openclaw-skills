@@ -1,0 +1,9 @@
+{
+  "name": "xhsfenxi-pro",
+  "version": "2.0.0",
+  "description": "小红书博主全链路深度分析：数据采集 + 三型分类 + 内核三段论 + 爆款选题公式",
+  "scripts": {},
+  "keywords": ["xiaohongshu", "xhsfenxi", "博主分析", "爆款选题"],
+  "author": "Cosmofang",
+  "license": "MIT"
+}
